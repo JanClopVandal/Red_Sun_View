@@ -359,8 +359,9 @@
     .artists .artist .portrait-col {
       width: 100% !important;              /* override JS-set width */
       height: auto !important;             /* override JS-set height */
-      aspect-ratio: 16 / 11;               /* cinematic-ish crop on mobile */
-      align-self: stretch;
+      aspect-ratio: 948 / 2126;            /* keep native vertical portrait ratio */
+      max-width: min(320px, 62vw);         /* don't let it dominate the phone screen */
+      align-self: center;
     }
     .artists .artist .info {
       padding-top: clamp(28px, 7vw, 44px);
