@@ -16,14 +16,14 @@ const CONCEPT_LINES = [
 
 
 const PHOTOS = {
-  cover:   "assets/img/dome-hands.jpg",     // hands silhouettes — cover
-  break1:  "assets/img/dome-03.jpg",        // sun — Frame 01 (after concept)
-  midBreak:"assets/img/dome-04.jpg",        // fracture — Frame 02 (between artists & festival)
-  g_lead:  "assets/img/dome-07.jpg",        // noise — Frame 03 (gallery hero, swapped)
-  g_a:     "assets/img/dome-02.jpg",        // lines — Frame 04
-  g_b:     "assets/img/dome-06.jpg",        // tower — Frame 07
-  g_c:     "assets/img/dome-01.jpg",        // structures — Frame 08 (gallery tail, swapped)
-  g_d:     "assets/img/dome-05.jpg",        // flare — Frame 06
+  cover: "assets/img/dome-hands.jpg", // hands silhouettes — cover
+  break1: "assets/img/dome-03.jpg", // sun — Frame 01 (after concept)
+  midBreak: "assets/img/dome-04.jpg", // fracture — Frame 02 (between artists & festival)
+  g_lead: "assets/img/dome-07.jpg", // noise — Frame 03 (gallery hero, swapped)
+  g_a: "assets/img/dome-02.jpg", // lines — Frame 04
+  g_b: "assets/img/dome-06.jpg", // tower — Frame 07
+  g_c: "assets/img/dome-01.jpg", // structures — Frame 08 (gallery tail, swapped)
+  g_d: "assets/img/dome-05.jpg" // flare — Frame 06
 };
 
 const ARTISTS = [
@@ -94,18 +94,28 @@ function useFitPortraits() {
     const sync = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
+        const mobile = window.matchMedia("(max-width: 720px)").matches;
         document.querySelectorAll(".artists .artist").forEach((a) => {
           const info = a.querySelector(".info");
-          const col  = a.querySelector(".portrait-col");
+          const col = a.querySelector(".portrait-col");
           if (!info || !col) return;
+          if (mobile) {
+            // mobile layout is CSS-driven — clear any inline sizes left from desktop
+            if (col._w != null || col._h != null) {
+              col.style.width = "";
+              col.style.height = "";
+              col._w = null; col._h = null;
+            }
+            return;
+          }
           // measure with portrait collapsed so info width is its "natural" max
           const h = info.offsetHeight;
           const w = Math.round(h * PORTRAIT_RATIO);
           // skip near-no-op writes to prevent a ResizeObserver feedback loop
           if (col._w === w && col._h === h) return;
-          col._w = w; col._h = h;
+          col._w = w;col._h = h;
           col.style.height = h + "px";
-          col.style.width  = w + "px";
+          col.style.width = w + "px";
         });
       });
     };
@@ -119,7 +129,7 @@ function useFitPortraits() {
     return () => {
       window.removeEventListener("resize", sync);
       cancelAnimationFrame(raf);
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);
     };
   }, []);
 }
@@ -200,9 +210,10 @@ function Case() {
       {/* FESTIVAL / FULL RECORDING — moved above gallery */}
       <section className="festival sect-pad" data-screen-label="06 Festival">
         <h2 className="ftitle">
-          <span className="cjk">「</span>
+          <span className="cjk"></span>
           <span className="latin">Future Vision Lab 2025</span>
-          <span className="cjk">」</span>
+          <span className="cjk">
+</span>
           <span className="cjk suffix">作品全紀錄</span>
         </h2>
         <p className="intro">
@@ -214,15 +225,14 @@ function Case() {
           Culture Lab. The complete documentation of the live appears below.
         </p>
         <div className="video">
-          <iframe
-            src="https://www.youtube.com/embed/qTb0QXlOlZs?start=23"
-            title="Red Sunrise — Future Vision Lab 2025 — full recording"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen />
+          <iframe src="https://www.youtube.com/embed/qTb0QXlOlZs?start=23"
+          title="Red Sunrise — Future Vision Lab 2025 — full recording"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen />
         </div>
         <div className="video-meta">
-          <span>Full Recording · Live A/V</span>
+          <span></span>
           <span>C-LAB Taipei · 2025</span>
         </div>
       </section>

@@ -330,7 +330,88 @@
     font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
     color: var(--cream-mute);
   }
+
+  /* ============================================================
+     MOBILE — max-width 720px. Desktop layout above is untouched.
+     ============================================================ */
+  @media (max-width: 720px) {
+    :root { --pad-x: 20px; }
+    html, body { overflow-x: hidden; }
+
+    /* topbar — compress, keep just the brand */
+    .topbar { padding: 12px 16px; font-size: 9px; letter-spacing: .18em; }
+    .topbar .right { display: none; }
+
+    /* hero — fit the title on a phone, anchor closer to the bottom */
+    .hero { min-height: 92vh; }
+    .hero .title { font-size: clamp(64px, 22vw, 120px); letter-spacing: -0.02em; }
+    .hero .hero-inner { padding: 0 var(--pad-x) 36px; }
+
+    /* concept — dial back the giant display so it fits a column */
+    .concept .text { font-size: clamp(34px, 9vw, 64px); }
+
+    /* artists — stack: portrait on top, info below */
+    .artists .artist {
+      flex-direction: column !important;   /* override row-reverse for 2nd */
+      gap: 0;
+      align-items: stretch;
+    }
+    .artists .artist .portrait-col {
+      width: 100% !important;              /* override JS-set width */
+      height: auto !important;             /* override JS-set height */
+      aspect-ratio: 16 / 11;               /* cinematic-ish crop on mobile */
+      align-self: stretch;
+    }
+    .artists .artist .info {
+      padding-top: clamp(28px, 7vw, 44px);
+      padding-bottom: clamp(40px, 9vw, 72px);
+    }
+
+    /* mobile resets the 2nd-artist right-alignment back to left */
+    .artists .artist + .artist .info {
+      align-items: flex-start;
+      text-align: left;
+    }
+    .artists .artist + .artist .info .role {
+      border-left: 2px solid var(--cream);
+      border-right: 0;
+      padding-left: 12px;
+      padding-right: 0;
+    }
+    .artists .artist + .artist .info .bio { margin-left: 0; }
+    .artists .artist + .artist .info .links { justify-content: flex-start; }
+
+    .artists .artist .name { font-size: clamp(48px, 14vw, 88px); }
+
+    /* gallery rows — collapse every multi-col row to a single column */
+    .gallery { gap: 6px; }
+    .gallery .row.r-2,
+    .gallery .row.r-12,
+    .gallery .row.r-21,
+    .gallery .row.r-3 { grid-template-columns: 1fr; height: auto; }
+    .gallery .row.r-2 > .photo,
+    .gallery .row.r-12 > .photo,
+    .gallery .row.r-21 > .photo,
+    .gallery .row.r-3 > .photo { aspect-ratio: 16 / 11; }
+    .gallery .row.r-1 { height: auto; }
+    .gallery .row.r-1.h-tall  > .photo,
+    .gallery .row.r-1.h-med   > .photo,
+    .gallery .row.r-1.h-short > .photo { height: auto; aspect-ratio: 16 / 11; }
+
+    /* break (full-bleed mid frames) — same 16:11 mobile crop */
+    .break .photo { aspect-ratio: 16 / 11; }
+
+    /* festival title — wrap CJK suffix to its own line */
+    .festival { padding-top: clamp(48px, 12vw, 80px); padding-bottom: clamp(48px, 12vw, 80px); }
+    .festival .ftitle { font-size: clamp(32px, 10vw, 56px); }
+    .festival .ftitle .suffix { display: block; margin-left: 0; margin-top: 0.18em; }
+    .festival .intro { font-size: 14px; }
+
+    /* footer */
+    footer .row { flex-direction: column; gap: 8px; }
+  }
 </style>
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
