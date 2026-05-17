@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Red Sunrise — A/V Live</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  @font-face {
+    font-family: "MoonSwing";
+    src: url("assets/fonts/MoonSwing.otf") format("opentype"),
+         url("assets/fonts/MoonSwing.ttf") format("truetype");
+    font-display: block;
+  }
+
+  :root {
+    --red:       #870F11;
+    --red-deep:  #5b0a0c;
+    --red-bright:#c4181b;
+    --cream:     #F2E6C7;
+    --cream-mute:rgba(242,230,199,.62);
+    --cream-soft:rgba(242,230,199,.85);
+    --rule:      rgba(242,230,199,.22);
+    --rule-2:    rgba(242,230,199,.45);
+
+    --display: "MoonSwing", "Times New Roman", serif;
+    --mono:    "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+    --pad-x:   clamp(28px, 5vw, 80px);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: var(--red);
+    color: var(--cream);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--cream); color: var(--red); }
+
+  /* type helpers */
+  .display      { font-family: var(--display); font-weight: 400; line-height: .95; letter-spacing: -0.005em; }
+  .mono         { font-family: var(--mono); }
+  .num          { font: 500 11px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--cream-mute); }
+  .num.bright   { color: var(--cream); }
+  .red          { color: var(--red); }
+  .cream        { color: var(--cream); }
+
+  /* page chrome */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px var(--pad-x);
+    font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
+    color: var(--cream); mix-blend-mode: difference;
+    pointer-events: none;
+  }
+  .topbar .left, .topbar .right { display: flex; gap: 14px; align-items: center; }
+  .topbar .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--cream);
+    animation: pulse 2.4s infinite ease-in-out;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+
+  /* section */
+  section { position: relative; }
+  .sect-pad { padding: clamp(60px, 9vw, 140px) var(--pad-x); }
+  .sect-label {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+  .sect-label .num { color: var(--cream); }
+  .sect-label .line { flex: 1; height: 1px; background: var(--rule); }
+
+  /* rules */
+  .rule { height: 1px; background: var(--rule); }
+  .rule-strong { background: var(--rule-2); }
+
+  /* buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 11px 16px;
+    border: 1px solid var(--rule-2);
+    color: var(--cream); background: transparent;
+    font: 500 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase;
+    text-decoration: none;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+  }
+  .btn:hover { background: var(--cream); color: var(--red); border-color: var(--cream); }
+  .btn .arr { font-size: 13px; line-height: 1; transform: translateY(-1px); }
+  .btn.solid { background: var(--cream); color: var(--red); border-color: var(--cream); }
+  .btn.solid:hover { background: transparent; color: var(--cream); }
+
+  /* photo full bleed */
+  .bleed { width: 100%; display: block; }
+  .bleed-grid { display: grid; gap: 4px; background: var(--red); }
+  .photo {
+    position: relative; overflow: hidden;
+    background: var(--red-deep);
+  }
+  .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .photo .cap {
+    position: absolute; left: 16px; bottom: 14px;
+    color: var(--cream); font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    z-index: 2;
+  }
+  .photo .frame-id {
+    position: absolute; right: 16px; top: 14px;
+    color: var(--cream); font: 500 10px/1 var(--mono); letter-spacing: .22em;
+    opacity: .85; text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+
+  /* footer */
+  footer { padding: 28px var(--pad-x); border-top: 1px solid var(--rule); }
+  footer .row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  /* hero — full-bleed photo, title overlaid */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    isolation: isolate;
+  }
+  .hero .hero-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .hero .hero-veil {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 55%, rgba(11,2,2,.78) 100%),
+      linear-gradient(90deg, rgba(11,2,2,.35), rgba(0,0,0,0) 45%);
+  }
+  .hero .hero-inner {
+    padding: 0 var(--pad-x) clamp(48px, 6vw, 90px);
+    max-width: 1600px;
+  }
+  .hero .title {
+    font-family: var(--display);
+    font-size: clamp(96px, 17vw, 280px);
+    line-height: .86;
+    letter-spacing: -0.012em;
+    color: var(--cream);
+  }
+  .hero .title .l1 { display: block; }
+  .hero .title .l2 { display: block; margin-top: -.04em; }
+  .hero .meta {
+    margin-top: clamp(28px, 4vw, 50px);
+    display: flex; align-items: baseline; flex-wrap: wrap;
+    gap: 18px;
+    max-width: 720px;
+  }
+  .hero .meta .big { font: 500 14px/1 var(--mono); letter-spacing: .28em; text-transform: uppercase; color: var(--cream); }
+  .hero .meta .meta-rule { flex: 1; height: 1px; background: var(--rule-2); min-width: 60px; }
+
+  /* concept */
+  .concept .text {
+    font-family: var(--display);
+    font-size: clamp(48px, 7.2vw, 116px);
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    white-space: pre-line;
+    max-width: 1280px;
+  }
+  .concept .text em { font-style: normal; color: var(--cream); opacity: .55; }
+  .concept .tags {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: clamp(40px, 6vw, 80px);
+  }
+  .concept .tag { border-top: 1px solid var(--rule-2); padding-top: 10px; font: 500 11px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; }
+  .concept .tag .ix { display:block; color: var(--cream-mute); margin-bottom: 6px; font-size: 9.5px; }
+
+  /* photo break: one wide cinematic frame */
+  .break { width: 100%; }
+  .break .photo { aspect-ratio: 21/9; }
+
+  /* artists */
+  .artists .artist {
+    display: flex;
+    gap: clamp(28px, 4vw, 72px);
+    align-items: stretch;
+    padding-top: clamp(48px, 6vw, 96px);
+    padding-bottom: clamp(48px, 6vw, 96px);
+    border-top: 1px solid var(--rule);
+  }
+  .artists .artist:first-child { border-top: none; padding-top: 0; }
+  .artists .artist + .artist { flex-direction: row-reverse; }
+  .artists .artist .portrait-col {
+    flex: 0 0 auto;
+    width: 320px;                    /* fallback before JS runs */
+    height: auto;
+    position: relative;
+    /* JS sets width & height to match info content + maintain aspect */
+  }
+  .artists .artist .portrait {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .artists .artist .portrait img { filter: grayscale(0.05) contrast(1.04); }
+  .artists .artist .info { flex: 1 1 auto; padding-top: 4px; min-width: 0; display: flex; flex-direction: column; }
+
+  /* mirrored second artist — text + buttons hug the photo (right edge) */
+  .artists .artist + .artist .info {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .artists .artist + .artist .info .role {
+    border-left: 0;
+    border-right: 2px solid var(--cream);
+    padding-left: 0;
+    padding-right: 12px;
+  }
+  .artists .artist + .artist .info .bio { margin-left: auto; }
+  .artists .artist + .artist .info .links { justify-content: flex-end; }
+  .artists .artist .name {
+    font-family: var(--display);
+    font-size: clamp(64px, 8vw, 132px);
+    line-height: .92;
+    word-wrap: break-word;
+  }
+  .artists .artist .aka {
+    font: 500 11px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
+    margin-top: 14px; color: var(--cream-mute);
+  }
+  .artists .artist .role {
+    font: 500 12px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase;
+    margin-top: 26px; color: var(--cream);
+    border-left: 2px solid var(--cream); padding-left: 12px;
+  }
+  .artists .artist .bio {
+    font-family: var(--mono);
+    font-size: 14.5px; line-height: 1.65;
+    margin-top: 22px; max-width: 520px;
+    color: var(--cream-soft);
+  }
+  .artists .artist .links {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .artists .artist .stack {
+    margin-top: 22px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .artists .artist .chip {
+    border: 1px solid var(--rule-2); padding: 6px 10px;
+    font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase;
+    color: var(--cream-mute);
+  }
+
+  /* gallery */
+  .gallery { display: grid; gap: 4px; }
+  .gallery .row { display: grid; gap: 4px; }
+  .gallery .row.r-1 { grid-template-columns: 1fr; }
+  .gallery .row.r-2 { grid-template-columns: 1fr 1fr; }
+  .gallery .row.r-12 { grid-template-columns: 1.7fr 1fr; }
+  .gallery .row.r-21 { grid-template-columns: 1fr 1.7fr; }
+  .gallery .row.r-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .gallery .row.h-tall  { height: clamp(420px, 60vw, 780px); }
+  .gallery .row.h-med   { height: clamp(340px, 42vw, 560px); }
+  .gallery .row.h-short { height: clamp(260px, 32vw, 420px); }
+
+  /* contact — removed by request; styles kept commented for future booking page */
+
+  /* festival / video block */
+  .festival { padding-top: clamp(60px, 8vw, 120px); padding-bottom: clamp(60px, 8vw, 120px); }
+  .festival .ftitle {
+    font-size: clamp(48px, 6.8vw, 116px);
+    line-height: 1.0;
+    letter-spacing: -0.005em;
+    margin: 0;
+    color: var(--cream);
+    font-weight: 400;
+    max-width: 1280px;
+  }
+  .festival .ftitle .cjk {
+    font-family: "Songti SC", "Hiragino Mincho ProN", "Noto Serif CJK SC",
+                 "Source Han Serif SC", "STSong", serif;
+    font-weight: 400;
+  }
+  .festival .ftitle .latin {
+    font-family: var(--display);
+    letter-spacing: -0.012em;
+  }
+  .festival .ftitle .suffix {
+    display: inline-block;
+    margin-left: 0.18em;
+  }
+  .festival .intro {
+    max-width: 720px;
+    margin: clamp(26px, 3.6vw, 44px) 0 clamp(36px, 5vw, 64px);
+    font: 400 15px/1.65 var(--mono);
+    color: var(--cream-soft);
+  }
+  .festival .intro .lead {
+    display: block;
+    color: var(--cream);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .festival .video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--rule-2);
+    background: #000;
+  }
+  .festival .video iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+  .festival .video-meta {
+    margin-top: 16px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase;
+    color: var(--cream-mute);
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="redsunrise.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
