@@ -34,7 +34,7 @@ const ARTISTS = [
   portrait: "assets/img/portrait-konstruktor.jpg",
   role: "Sound · Visual / Unity · AI",
   title: "Sound and media artist.",
-  bio: "He works at the intersection of audiovisual performance, combining sound, light and visual devices into cohesive live compositions.",
+  bio: "For this project, he composed an ambisonics audio work for full-dome, with spatial layering across the dome field. He also contributed neural renders to the visual layer of the performance.",
   stack: ["Unity", "AI", "Live sound"],
   links: [
   { label: "Web", href: "https://matvienkodanil.com/" },
@@ -47,8 +47,8 @@ const ARTISTS = [
   aka: null,
   portrait: "assets/img/portrait-elizabeth.jpg",
   role: "Visual / TouchDesigner",
-  title: "Creative director, generative artist.",
-  bio: "[bio будет дополнен — текст от художницы.]",
+  title: "Creative producer, generative artist.",
+  bio: "She built the majority of visual scenes for this work — assembling audio-reactive patches in TouchDesigner, shaping the visual language of the piece, and aligning sonic imagery with the visual field.",
   stack: ["TouchDesigner", "Generative"],
   links: [
   { label: "Behance", href: "https://www.behance.net/elizabethros" },
